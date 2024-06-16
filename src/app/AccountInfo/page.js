@@ -18,6 +18,7 @@ export default function Home() {
 
 
 
+
         setData(() => {
             return response;
         });
@@ -49,7 +50,7 @@ export default function Home() {
                 </div>
                 <div>
                     <h1>Account Info</h1>
-                    <DynamicTable tabledata = {data}/>
+                    <DynamicTable tabledata = {JSON.stringify(data)}/>
                 </div>
             </div>
         </div>
