@@ -1,6 +1,7 @@
 'use client'
 import styles from "./page.module.css";
 import NavBar from "../navbar";
+import DynamicTable from "../dynamic-table";
 import {useState, useEffect, useRef} from "react";
 
 
@@ -14,7 +15,9 @@ export default function Home() {
         const solana = new web3.Connection("https://docs-demo.solana-mainnet.quiknode.pro/");
         const publicKey = new web3.PublicKey(address);
         const response = await solana.getAccountInfo(publicKey);
-        console.log("Response Value", response);
+
+
+
         setData(() => {
             return response;
         });
@@ -46,7 +49,7 @@ export default function Home() {
                 </div>
                 <div>
                     <h1>Account Info</h1>
-                    <p>{data === undefined ? "":JSON.stringify(data)}</p>
+                    <DynamicTable tabledata = {data}/>
                 </div>
             </div>
         </div>
