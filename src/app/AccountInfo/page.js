@@ -1,41 +1,54 @@
 'use client'
 import styles from "./page.module.css";
-import {useState, useEffect} from "react";
+import NavBar from "../navbar";
+import {useState, useEffect, useRef} from "react";
 
 
 export default function Home() {
     const web3 = require("@solana/web3.js");
-    const publicKey = new web3.PublicKey(
-        "7cVfgArCheMR6Cs4t6vz5rfnqd56vZq4ndaBrY5xkxXy"
-        );
 
     const [data, setData] = useState();
-    const [count, setCount] = useState(0);
+    const inputRef = useRef();
 
-    async function fetchAccountInfo() {
+    async function fetchAccountInfo(address) {
         const solana = new web3.Connection("https://docs-demo.solana-mainnet.quiknode.pro/");
+        const publicKey = new web3.PublicKey(address);
         const response = await solana.getAccountInfo(publicKey);
-        console.log("Respose Type:", typeof(response));
-    }
-    
-    useEffect(() => {
-        fetchAccountInfo()
-    },[])
+        console.log("Response Value", response);
+        setData(() => {
+            return response;
+        });
+        console.log("updated sate of: data");
+    };
 
+    const handleKeyPress = (event) => {
+        if(event.key === 'Enter'){
+            fetchAccountInfo(inputRef.current.value);
+            event.preventDefault();
+        }
+      };
+
+    const handleClick = () => {
+        fetchAccountInfo(inputRef.current.value);
+    };
+
+
+    console.log("data value before render", data);
     return (
         <div>
+        <NavBar />
             <div>
-                <h1 className={styles.button}>Solana Account Info</h1>
-                <input type="text" placeholder="Enter a Solana Address"></input>
-                <button type="button" onClick={() => setCount(count + 1)}>Enter</button>
-                <p>{count} clicks</p>
-            </div>
-            <div>
-                <h1>Account Info</h1>
-                <p>{JSON.stringify(data)}</p>
+                <div>
+                    <h1 className={styles.button}>Solana Account Info</h1>
+                    <input ref={inputRef} id="Address" type="text" placeholder="Enter a Solana Address" onKeyDown={handleKeyPress}>
+                    </input>
+                    <button id="AddressBtn" type="button" onClick={handleClick}>Enter</button>
+                </div>
+                <div>
+                    <h1>Account Info</h1>
+                    <p>{data === undefined ? "":JSON.stringify(data)}</p>
+                </div>
             </div>
         </div>
-
-        
     );
 }
